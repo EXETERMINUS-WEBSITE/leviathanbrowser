@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leviathan Browser by mikael</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: url('https://cdn.mos.cms.futurecdn.net/c5gNdBLnZBy3zvGiLWGixn.gif') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            overflow: hidden;
+        }
+
+        /* Animasi latar belakang berulang */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://cdn.mos.cms.futurecdn.net/c5gNdBLnZBy3zvGiLWGixn.gif') no-repeat center center fixed;
+            background-size: cover;
+            z-index: -1;
+            opacity: 0.5;
+        }
+
+        /* Responsive top bar */
+        #top-bar {
+            display: none;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 10px;
+            position: fixed;
+            top: -100px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            transition: top 0.5s ease-in-out;
+        }
+
+        #top-bar.active {
+            top: 0;
+        }
+
+        /* Animasi input search */
+        #top-bar input {
+            width: 50%;
+            padding: 10px;
+            font-size: 1em;
+            border-radius: 30px;
+            border: none;
+            margin-right: 10px;
+            transition: width 0.4s ease-in-out, box-shadow 0.4s;
+        }
+
+        #top-bar input:focus {
+            width: 60%;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+        }
+
+        /* Animasi pada tombol search */
+        #top-bar button {
+            padding: 10px 20px;
+            font-size: 1em;
+            border-radius: 30px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        #top-bar button:hover {
+            background-color: #45a049;
+            transform: scale(1.1);
+        }
+
+        /* Back button with logo */
+        #back-button {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            font-size: 1em;
+            border-radius: 30px;
+            border: none;
+            background-color: #FF0000;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        #back-button:hover {
+            transform: scale(1.05);
+        }
+
+        #back-button img {
+            width: 24px;
+            height: 24px;
+            margin-right: 8px;
+        }
+
+        /* Home container */
+        #home-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+        }
+
+        /* Links with logos */
+        .link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: white;
+            font-size: 1.2em;
+            margin: 10px;
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            transition: background 0.3s, transform 0.3s;
+            width: 90%;
+            max-width: 300px;
+        }
+
+        .link:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(1.05);
+        }
+
+        .link img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+        }
+
+        /* Iframe and responsiveness */
+        #browser-frame {
+            flex: 1;
+            border: none;
+            width: 100%;
+            height: 100vh;
+            display: none;
+        }
+
+        /* Responsive for small screens */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5em;
+            }
+
+            #top-bar input {
+                width: 60%;
+                font-size: 0.9em;
+            }
+
+            #top-bar button {
+                font-size: 0.9em;
+            }
+
+            .link {
+                font-size: 1em;
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top bar for search and back button -->
+    <div id="top-bar">
+        <button id="back-button" onclick="goBackToHome()">
+            <img src="https://image-url.com/logo.png" alt="Back to Home"> Home
+        </button>
+        <input type="text" id="top-search-input" placeholder="Search the web...">
+        <button onclick="performSearch()">Search</button>
+    </div>
+
+    <!-- Home container -->
+    <div id="home-container">
+        <div>
+            <h1>Welcome to Leviathan Browser</h1>
+            <div id="search-bar" style="display: flex; align-items: center;">
+                <input type="text" id="search-input" placeholder="Search the web..." onkeypress="handleEnter(event)" style="flex: 1; margin-right: 10px; padding: 10px; font-size: 1em; border-radius: 30px; transition: width 0.4s ease-in-out, box-shadow 0.4s;">
+                <button onclick="search()" style="padding: 10px 20px; font-size: 1em; border-radius: 30px; border: none; background-color: #4CAF50; color: white; cursor: pointer; transition: transform 0.3s ease, background-color 0.3s ease;">Search</button>
+            </div>
+            <div id="links">
+                <a href="https://zone-xsec.com/archive/team/Leviathan+Perfect+Hunter" class="link" target="_blank">
+                    <img src="https://media.tenor.com/6ByrkdZ2FkcAAAAi/defacer-attack.gif" alt="zone-xsec"> deface mirror 1
+                </a>
+                <a href="https://defacer.id/archive/team=Leviathan%2520Perfect%2520Hunter/page=1" class="link" target="_blank">
+                    <img src="https://media.tenor.com/6ByrkdZ2FkcAAAAi/defacer-attack.gif" alt="defacer.id"> defacer.id
+                </a>
+                <a href="https://www.hax.or.id/archive/team/Leviathan+Perfect+Hunter" class="link" target="_blank">
+                    <img src="https://media.tenor.com/6ByrkdZ2FkcAAAAi/defacer-attack.gif" alt="hax.or"> haxor
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Iframe to display websites -->
+    <iframe id="browser-frame"></iframe>
+
+    <script>
+        function handleEnter(event) {
+            if (event.key === "Enter") {
+                search();
+            }
+        }
+
+        function search() {
+            var query = document.getElementById('search-input').value;
+            if (query) {
+                document.getElementById('top-bar').classList.add('active');
+                document.getElementById('top-bar').style.display = 'flex';
+                document.getElementById('top-search-input').value = query;
+
+                var frame = document.getElementById('browser-frame');
+                frame.style.display = 'block';
+                if (query.startsWith('http://') || query.startsWith('https://')) {
+                    frame.src = query;
+                } else {
+                    frame.src = 'https://www.bing.com/search?q=' + encodeURIComponent(query);
+                }
+
+                document.getElementById('home-container').style.display = 'none';
+            }
+        }
+
+        function performSearch() {
+            var query = document.getElementById('top-search-input').value;
+            if (query) {
+                var frame = document.getElementById('browser-frame');
+                if (query.startsWith('http://') || query.startsWith('https://')) {
+                    frame.src = query;
+                } else {
+                    frame.src = 'https://www.bing.com/search?q=' + encodeURIComponent(query);
+                }
+            }
+        }
+
+        function goBackToHome() {
+            document.getElementById('top-bar').classList.remove('active');
+            document.getElementById('top-bar').style.display = 'none';
+            document.getElementById('home-container').style.display = 'flex';
+            document.getElementById('browser-frame').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
